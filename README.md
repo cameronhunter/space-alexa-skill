@@ -13,7 +13,19 @@ Alexa, ask Space play a sound from space
 
 See `model/UTTERANCES` for more example phrases.
 
-## Test
+## Development
+
+### Setup
+You must add a file `config/nasa.config.js` which exports an object containing your API keys for the NASA and SoundCloud APIs.
+
+```javascript
+export default {
+  api_key: '',
+  soundcloud_id: ''
+}
+```
+
+### Test
 
 ```bash
 npm test
