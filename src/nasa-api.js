@@ -13,26 +13,19 @@ export default class NasaAPI {
   sound(params) {
     return this._fetch('/planetary/sounds', { ...params }).then(({ results }) => {
       const result = random(results);
-      return fetch(`${result.download_url}?client_id=${this.soundcloud_id}`).then(
-        response => response.url.replace('http:', 'https:')
-      ).then(
-        download_url => ({ ...result, download_url })
-      );
+      return { ...result, download_url: `${result.download_url}?client_id=${this.soundcloud_id}` };
     });
   }
 
   _fetch(endpoint, params = {}) {
-    const querystring = Object.entries({ ...params, api_key: this.api_key }).reduce((state, [key, value]) => ([
-      ...state,
-      `${key}=${encodeURIComponent(value)}`
-    ]), []);
+    const querystring = Object.entries({ ...params, api_key: this.api_key }).reduce((state, [key, value]) => {
+      return [...state, `${key}=${encodeURIComponent(value)}`];
+    }, []);
 
     const url = `${API_ENDPOINT}${endpoint}?${querystring}`;
 
     this._log('info', 'REQUEST', url);
-    return fetch(url).then(response => {
-      return response.json();
-    }).then(response => {
+    return fetch(url).then(response => response.json()).then(response => {
       return response.results && response.results.length ? response : Promise.reject('Empty results');
     }).catch(error => {
       this._log('error', 'FAILURE', url, error);
